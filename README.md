@@ -54,6 +54,7 @@ Cualquier faltante de los requisitos que se presentan a continuación, hará que
     - Cada producto debe tener como mínimo: Nombre, descripción, precio, una imagen y categoría. Toda esta información se debe mostrar por cada ítem.
     - Debe tener un botón que permita agregar el ítem al carrito.
     - Se deben poder filtrar los productos por categoría.
+    - Se debe preveer la posibilidad de ordenar los productos a la vista por precio (menor a mayor y viceversa).
 
 - Carrito:
     - Debe haber un área del sitio que muestre (mientras el usuario interactúa con el sitio) la cantidad de productos agregados al carrito y el monto total a pagar.
@@ -72,6 +73,8 @@ Entre las entregas que cumplan el punto anterior, incrementarán su nota los des
     - Armar la ventana modal del detalle del producto, donde se podrá ver la información en detalle del producto. Si se resuelve esto, se puede obviar poner el detalle del producto en la tarjeta original del producto.
     - Esta ventana debe tener un botón que permita agregar el ítem al carrito. Programar dicho botón, para que vaya agregando el ítem al carrito.
     - Debe tener un botón que permita cerrar la ventana modal. Programar dicho botón, para que remueva la ventana modal.
+    - Preveer la posibilidad de filtrar por rango de precio.
+    - Contemplar la posibilidad de que los productos tengan stock.
 
 - Carrito:
     - Armar la ventana modal del detalle del carrito, que debe listar los productos agregados.
@@ -79,7 +82,8 @@ Entre las entregas que cumplan el punto anterior, incrementarán su nota los des
     - **No mostrar productos duplicados**.
     - Debe mostrar la cantidad de productos agregados y el monto totales.
     - Debe tener un botón que permita cerrar la ventana modal (programarlo).
-    - Debe permitir eliminar cada producto del carrito así como la posibilidad de eliminar todos los productos del carrito o agregar más productos.
+    - Debe permitir eliminar cada producto de a uno o agregar del mismo al carrito así como la posibilidad de eliminar todos los productos del carrito o agregar más productos.
+    - Preservar los productos del carrito aunque se refresque la página.
 
 - General:
     - Se valorará la modificación o agregado significativo de HTML / CSS al sitio.

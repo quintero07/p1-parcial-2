@@ -2,7 +2,7 @@
 import { Producto } from './producto.js';
 
 const fetchProductos = async () => {
-    const respuesta = await fetch("../productos.json");
+    const respuesta = await fetch("./productos.json");
     const productos = await respuesta.json();
     return productos;
 }

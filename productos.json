@@ -1,10 +1,66 @@
 [
     {
-        "id": 1,
-        "nombre": "Producto",
-        "descripcion": "Descripción del producto",
-        "precio": 0,
-        "imagen": "images/producto-de-ejemplo.jpg",
-        "categoría": "Nombre de la categoría"
+      "id": 1,  
+      "nombre": "Aros",
+      "descripcion": "Aros largos con chapones de metal, con cierre de tope a presión.",
+      "precio": "10.00",
+      "imagen": "images/aros.png",
+      "categoria": "new"
+    },
+    {
+      "id": 2,
+      "nombre": "Anillo",
+      "descripcion": "Anillo sello metálico con diseño de flor y detalle de strass.",
+      "precio": "20.00",
+      "imagen": "images/anillo.png",
+      "categoria": "new"
+    },
+    {
+      "id": 3,  
+      "nombre": "Cadena",
+      "descripcion": "Cadena corta con dije de pájaro, con cierre de mosquetón",
+      "precio": "30.00",
+      "imagen": "images/cadena.png",
+      "categoria": "off"
+    },
+    {
+      "id": 4,  
+      "nombre": "Cartera",
+      "descripcion": "City con correa larga regulable y desmontable",
+      "precio": "40.00",
+      "imagen": "images/cartera.png",
+      "categoria": "off"
+    },
+    {
+      "id": 5, 
+      "nombre": "Gorro",
+      "descripcion": "Gorro tejido con pompón y detalle de costuras a contratono",
+      "precio": "50.00",
+      "imagen": "images/gorro.png",
+      "categoria": "off"
+    },
+    {
+      "id": 6,  
+      "nombre": "Pañuelo",
+      "descripcion": "Pañuelo de raso estampado con motivo bulgaros",
+      "precio": "40.00",
+      "imagen": "images/panuelo.png",
+      "categoria": "sale"
+    },
+    {
+      "id": 7,  
+      "nombre": "Pulsera",
+      "descripcion": "Pulsera flexible de cadenas de acero.",
+      "precio": "50.00",
+      "imagen": "images/pulsera.png",
+      "categoria": "sale"
+    },
+    {
+      "id": 8,
+      "nombre": "Riñonera",
+      "descripcion": "Riñonera de viaje de material reciclado, con bolsillo frontal con cierre",
+      "precio": "60.00",
+      "imagen": "images/rinonera.png",
+      "categoria": "sale"
     }
-]
+  ]

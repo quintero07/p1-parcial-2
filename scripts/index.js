@@ -1,5 +1,6 @@
 'use strict';
 import { Producto } from './producto.js';
+let categoriaSeleccionada = 'all';
 
 const fetchProductos = async () => {
     const respuesta = await fetch("./productos.json");
@@ -93,28 +94,54 @@ const renderProductos = (productos) => {
     });
 };
 
-const filtros = document.querySelectorAll('.contenedorFiltros button');
+const filtros = document.querySelectorAll('.contenedorFiltros button.filtro');
+const botonesOrden = document.querySelectorAll('.contenedorFiltros button.orden');
 
-filtros.forEach(botonFiltro => {
+botonesOrden.forEach(botonOrden => {
+    botonOrden.addEventListener('click', (e) => {
+        botonesOrden.forEach(orden => {
+            orden.classList.remove('active-filter-btn');
+        });
+        e.target.classList.add('active-filter-btn');
+        const filtroAplicado = e.target.textContent.toLowerCase();
+        ordenarProductosPorPrecio(filtroAplicado);
+    });
+});
+
+const ordenarProductosPorPrecio = (tipoOrden) => {
+    let productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+    productosFiltrados = productos.sort((a, b) => {
+      const precioA = parseFloat(a.precio);
+      const precioB = parseFloat(b.precio);
+  
+      if (tipoOrden === 'mayor precio') {
+        return precioB - precioA;
+      } else if (tipoOrden === 'menor precio') {
+        return precioA - precioB;
+      }
+    });
+    renderProductos(productosFiltrados);
+  };  
+
+  filtros.forEach(botonFiltro => {
     botonFiltro.addEventListener('click', (e) => {
         filtros.forEach(filtro => {
             filtro.classList.remove('active-filter-btn');
         });
         e.target.classList.add('active-filter-btn');
-        const categoriaFiltrada = e.target.textContent.toLowerCase();
-        filtrarProductos(categoriaFiltrada);
+        categoriaSeleccionada = e.target.textContent.toLowerCase();
+        const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+        renderProductos(productosFiltrados);
     });
 });
 
-const filtrarProductos = (categoria) => {
-    if(categoria=='all'){
-        renderProductos(productos);
-    }else{
-        const productosFiltrados = productos.filter(prod => prod.categoria === categoria);
-        renderProductos(productosFiltrados)
+const aplicarFiltro = (categoria) => {
+    if (categoria === 'all') {
+        return productos;
+    } else {
+        return productos.filter(prod => prod.categoria === categoria);
     }
-
-}
+};
 
 const productos = await fetchProductos();
-document.addEventListener('DOMContentLoaded', renderProductos(productos));
+document.addEventListener('DOMContentLoaded', renderProductos(aplicarFiltro(categoriaSeleccionada)));

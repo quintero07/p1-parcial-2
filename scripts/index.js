@@ -77,11 +77,11 @@ const actualizaIconoCarrito = (qty) => {
 
 const renderProductos = (productos) => {
     const contenedorProductos = document.querySelector('#productos');
-    contenedorProductos.innerHTML = '';
+    contenedorProductos.innerHTML = ''; // Limpiar el contenedor antes de renderizar
     productos.forEach((p, index) => {
         const prod = new Producto({ ...p });
         const cardProd = prod.toHTML(index);
-        contenedorProductos.appendChild(cardProd)
+        contenedorProductos.appendChild(cardProd);
         
         cardProd.querySelector('.view-product').addEventListener('click', () => {
             llenaModalProducto(prod);
@@ -109,19 +109,20 @@ botonesOrden.forEach(botonOrden => {
 });
 
 const ordenarProductosPorPrecio = (tipoOrden) => {
-    let productosFiltrados = aplicarFiltro(categoriaSeleccionada);
-    productosFiltrados = productos.sort((a, b) => {
-      const precioA = parseFloat(a.precio);
-      const precioB = parseFloat(b.precio);
-  
-      if (tipoOrden === 'mayor precio') {
-        return precioB - precioA;
-      } else if (tipoOrden === 'menor precio') {
-        return precioA - precioB;
-      }
+    const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+    productosFiltrados.sort((a, b) => {
+        const precioA = parseFloat(a.precio);
+        const precioB = parseFloat(b.precio);
+
+        if (tipoOrden === 'mayor precio') {
+            return precioB - precioA;
+        } else if (tipoOrden === 'menor precio') {
+            return precioA - precioB;
+        }
+        return 0;
     });
     renderProductos(productosFiltrados);
-  };  
+};
 
   filtros.forEach(botonFiltro => {
     botonFiltro.addEventListener('click', (e) => {

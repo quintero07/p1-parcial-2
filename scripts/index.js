@@ -1,6 +1,9 @@
 'use strict';
 import { Producto } from './producto.js';
+import { Carrito } from './carrito.js';
 let categoriaSeleccionada = 'all';
+let carritoGuardado = JSON.parse(localStorage.getItem('carritoTepuy')) || [];
+const carrito = new Carrito(carritoGuardado.productos,carritoGuardado.total);
 
 const fetchProductos = async () => {
     const respuesta = await fetch("./productos.json");
@@ -8,123 +11,116 @@ const fetchProductos = async () => {
     return productos;
 }
 
-const llenaModalProducto = (prod) => {
-    document.getElementById('modal-product-img').src = prod.imagen;
-    document.getElementById('modal-product-img').alt = prod.nombre;
-    document.querySelector('.card-title').textContent = prod.nombre;
-    document.querySelector('.card-text').textContent = prod.descripcion;
-    document.getElementById('modal-product-price').textContent = `$${prod.precio}`;
-
-    const modalAddToCartButton = document.getElementById('modal-add-to-cart');
-    modalAddToCartButton.onclick = () => {
-        agregaAlCarrito(prod);
-    };
-}
-
-const agregaAlCarrito = (prod) => {
-    const cuerpoCarrito = document.getElementById('cart-body');
-    const fila = document.createElement('tr');
-
-    const celdaNombre = document.createElement('td');
-    celdaNombre.setAttribute('scope', 'fila');
-    celdaNombre.textContent = prod.nombre;
-    fila.appendChild(celdaNombre);
-
-    const celdaCategoria = document.createElement('td');
-    celdaCategoria.textContent = prod.categoria;
-    fila.appendChild(celdaCategoria);
-
-    const celdaPrecio = document.createElement('td');
-    celdaPrecio.textContent = '$' + prod.precio;
-    fila.appendChild(celdaPrecio);
-
-    const celdaBorrar = document.createElement('td');
-    const botonBorrar = document.createElement('a');
-    botonBorrar.href = '#';
-    botonBorrar.className = 'text-primary remove-from-cart';
-    botonBorrar.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    celdaBorrar.appendChild(botonBorrar);
-    fila.appendChild(celdaBorrar);
-
-    botonBorrar.addEventListener('click', (event) => {
-        event.preventDefault();
-        borrarDelCarrito(fila, prod.precio);
-    });
-
-    cuerpoCarrito.appendChild(fila);
-
-    actualizaTotal(prod.precio);
-    actualizaIconoCarrito(1);
-};
-
-const borrarDelCarrito = (fila, precio) => {
-    fila.remove();
-    actualizaTotal(-precio);
-    actualizaIconoCarrito(-1);
-};
-
-const actualizaTotal = (precio) => {
-    const totalCarrito = document.getElementById('total-price');
-    const totalActual = parseFloat(totalCarrito.textContent.substring(1)) || 0;
-    const nuevoTotal = totalActual + parseFloat(precio);
-    totalCarrito.textContent = `$${nuevoTotal.toFixed(2)}`;
-};
-
-const actualizaIconoCarrito = (qty) => {
-    const badge = document.querySelector('.badge');
-    badge.textContent = parseInt(badge.textContent) + qty
-}
+const btnVaciarCarrito = document.querySelector('#cart button.btn.btn-secondary');
+btnVaciarCarrito.addEventListener('click', () => {
+    if(carrito.productos.length == 0) return
+    carrito.vaciarCarrito();
+})
 
 const renderProductos = (productos) => {
     const contenedorProductos = document.querySelector('#productos');
-    contenedorProductos.innerHTML = ''; // Limpiar el contenedor antes de renderizar
+    contenedorProductos.replaceChildren();
     productos.forEach((p, index) => {
         const prod = new Producto({ ...p });
         const cardProd = prod.toHTML(index);
         contenedorProductos.appendChild(cardProd);
-        
+
         cardProd.querySelector('.view-product').addEventListener('click', () => {
-            llenaModalProducto(prod);
+            prod.llenaModalProducto(carrito);
         });
-        
+
         cardProd.querySelector('.add-to-cart').addEventListener('click', (event) => {
             event.preventDefault();
-            agregaAlCarrito(prod);
+            carrito.agregarAlCarrito({...prod, stock: 1});
         });
+    });
+
+    const modalOfertas = document.getElementById('oferta');
+    modalOfertas.addEventListener('shown.bs.modal', () => {
+        setTimeout(() => {
+            const bootstrapModal = bootstrap.Modal.getInstance(modalOfertas);
+            bootstrapModal.hide();
+        }, 3000); // TODO cambiar a 10000
     });
 };
 
+document.getElementById('metodoPago').addEventListener('change', function () {
+    const cuotasGroup = document.getElementById('cuotasGroup');
+    if (this.value === 'credito') {
+      cuotasGroup.classList.remove('d-none');
+    } else {
+      cuotasGroup.classList.add('d-none');
+    }
+});
 const filtros = document.querySelectorAll('.contenedorFiltros button.filtro');
-const botonesOrden = document.querySelectorAll('.contenedorFiltros button.orden');
+// const botonesOrden = document.querySelectorAll('.contenedorFiltros button.orden');
 
+// botonesOrden.forEach(botonOrden => {
+//     botonOrden.addEventListener('click', (e) => {
+//         botonesOrden.forEach(orden => {
+//             orden.classList.remove('active-filter-btn');
+//         });
+//         e.target.classList.add('active-filter-btn');
+//         const filtroAplicado = e.target.textContent.toLowerCase();
+//         ordenarProductosPorPrecio(filtroAplicado);
+//     });
+// });
+
+const botonesOrden = document.querySelectorAll('.orden');
+
+// Añade un evento a cada botón de ordenación
 botonesOrden.forEach(botonOrden => {
     botonOrden.addEventListener('click', (e) => {
-        botonesOrden.forEach(orden => {
-            orden.classList.remove('active-filter-btn');
+        // Quita la clase activa de todos los botones
+        botonesOrden.forEach(boton => {
+            boton.classList.remove('active-filter-btn');
         });
-        e.target.classList.add('active-filter-btn');
-        const filtroAplicado = e.target.textContent.toLowerCase();
-        ordenarProductosPorPrecio(filtroAplicado);
+
+        // Añade la clase activa al botón seleccionado
+        e.currentTarget.classList.add('active-filter-btn');
+
+        // Obtén el tipo de orden del atributo data-order
+        const tipoOrden = e.currentTarget.getAttribute('data-order');
+
+        // Llama a la función de ordenación según el tipo
+        ordenarProductosPorPrecio(tipoOrden);
     });
 });
 
+// const ordenarProductosPorPrecio = (tipoOrden) => {
+//     const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+//     productosFiltrados.sort((a, b) => {
+//         const precioA = parseFloat(a.precio);
+//         const precioB = parseFloat(b.precio);
+
+//         if (tipoOrden === 'mayor precio') {
+//             return precioB - precioA;
+//         } else if (tipoOrden === 'menor precio') {
+//             return precioA - precioB;
+//         }
+//         return 0;
+//     });
+//     renderProductos(productosFiltrados);
+// };
 const ordenarProductosPorPrecio = (tipoOrden) => {
     const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
     productosFiltrados.sort((a, b) => {
         const precioA = parseFloat(a.precio);
         const precioB = parseFloat(b.precio);
 
-        if (tipoOrden === 'mayor precio') {
+        if (tipoOrden === 'desc') {
             return precioB - precioA;
-        } else if (tipoOrden === 'menor precio') {
+        } else if (tipoOrden === 'asc') {
             return precioA - precioB;
         }
         return 0;
     });
+
+    // Renderiza los productos ordenados
     renderProductos(productosFiltrados);
 };
 
-  filtros.forEach(botonFiltro => {
+filtros.forEach(botonFiltro => {
     botonFiltro.addEventListener('click', (e) => {
         filtros.forEach(filtro => {
             filtro.classList.remove('active-filter-btn');
@@ -132,9 +128,25 @@ const ordenarProductosPorPrecio = (tipoOrden) => {
         e.target.classList.add('active-filter-btn');
         categoriaSeleccionada = e.target.textContent.toLowerCase();
         const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+        llenarModalOferta(categoriaSeleccionada);
         renderProductos(productosFiltrados);
     });
 });
+
+const llenarModalOferta = (categoriaSeleccionada) => {
+    const imagenOferta = document.getElementById('modal-oferta-img');
+    switch (categoriaSeleccionada) {
+        case 'new':
+            imagenOferta.src = 'images/bannerNew.png';
+            break;
+        case 'off':
+            imagenOferta.src = 'images/bannerOff.png';
+            break;
+        case 'sale':
+            imagenOferta.src = 'images/bannerSale.png';
+            break;
+    }
+}
 
 const aplicarFiltro = (categoria) => {
     if (categoria === 'all') {
@@ -145,4 +157,14 @@ const aplicarFiltro = (categoria) => {
 };
 
 const productos = await fetchProductos();
-document.addEventListener('DOMContentLoaded', renderProductos(aplicarFiltro(categoriaSeleccionada)));
+
+const inciaAplicacion = () => {
+    carrito.llenarModalCarrito();
+    carrito.actualizarIconoCarrito();
+    carrito.calcularTotal();
+    carrito.actualizarTotal();
+    const productosFiltrados = aplicarFiltro(categoriaSeleccionada);
+    renderProductos(productosFiltrados);
+}
+
+document.addEventListener('DOMContentLoaded', inciaAplicacion());

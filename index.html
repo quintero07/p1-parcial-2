@@ -21,7 +21,6 @@
 
 <body>
     <header class="navbar navbar-expand-lg navbar-light bg-white py-4 fixed-top">
-        <!-- Reemplazar por los datos que correspondan -->
         <div class="container">
             <h1>Programación I</h1>
             <div class="nav-btns">
@@ -29,12 +28,12 @@
                     <i class="fa fa-shopping-cart"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge bg-primary">0</span>
                 </button>
-                <button type="button" class="btn position-relative">
-                    <i class="fa fa-heart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge bg-primary">0</span>
+                <span class="ms-3">Ordernar</span>
+                <button type="button" class="btn position-relative orden" data-order="desc">
+                    <i class="fa fa-sort-numeric-desc"></i>
                 </button>
-                <button type="button" class="btn position-relative">
-                    <i class="fa fa-search"></i>
+                <button type="button" class="btn position-relative orden" data-order="asc">
+                    <i class="fa fa-sort-numeric-asc"></i>
                 </button>
             </div>
         </div>
@@ -50,11 +49,11 @@
                 <div class="row contenedorFiltros">
                     <div class="d-flex flex-wrap justify-content-center m-2">
                         <button type="button" class="btn m-2 text-dark active-filter-btn filtro">All</button>
-                        <button type="button" class="btn m-2 text-dark filtro">New</button>
-                        <button type="button" class="btn m-2 text-dark filtro">Off</button>
-                        <button type="button" class="btn m-2 text-dark filtro">Sale</button>
-                        <button type="button" class="btn m-2 text-dark orden">Mayor precio</button>
-                        <button type="button" class="btn m-2 text-dark orden">Menor precio</button>
+                        <button type="button" class="btn m-2 text-dark filtro" data-bs-toggle="modal" data-bs-target="#oferta">New</button>
+                        <button type="button" class="btn m-2 text-dark filtro" data-bs-toggle="modal" data-bs-target="#oferta">Off</button>
+                        <button type="button" class="btn m-2 text-dark filtro" data-bs-toggle="modal" data-bs-target="#oferta">Sale</button>
+                        <!-- <button type="button" class="btn m-2 text-dark orden">Mayor precio</button>
+                        <button type="button" class="btn m-2 text-dark orden">Menor precio</button> -->
                     </div>
                 </div>
                 <div class="special-list row g-0" id="productos">
@@ -62,7 +61,6 @@
             </div>
         </section>
     </main>
-
     <footer>
         <ul>
             <li>Profesor Fabrizio Carlassara</li>
@@ -91,6 +89,7 @@
                                 <th scope="col">Titulo</th>
                                 <th scope="col">Categoria</th>
                                 <th scope="col">Precio</th>
+                                <th scope="col" class="text-center">Cantidad</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -106,8 +105,8 @@
                     </table>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Comprar</button>
+                    <button type="button" class="btn btn-secondary">Vaciar Carrito</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#formulario">Continuar</button>
                 </div>
             </div>
         </div>
@@ -133,6 +132,92 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
                     <button type="button" class="btn btn-primary" id="modal-add-to-cart"><i
                             class="fa fa-shopping-cart px-1"></i>Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="formulario" tabindex="-1" aria-labelledby="productLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="productLabel">Checkout</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="p-3">
+                        <!-- Campo Nombre -->
+                        <div class="mb-3">
+                          <label for="nombre" class="form-label">Nombre Completo</label>
+                          <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre" required>
+                        </div>
+                      
+                        <!-- Campo Teléfono -->
+                        <div class="mb-3">
+                          <label for="telefono" class="form-label">Teléfono</label>
+                          <input type="tel" class="form-control" id="telefono" placeholder="Ingresa tu teléfono" required>
+                        </div>
+                      
+                        <!-- Campo Mail -->
+                        <div class="mb-3">
+                          <label for="mail" class="form-label">Correo Electrónico</label>
+                          <input type="email" class="form-control" id="mail" placeholder="Ingresa tu correo" required>
+                        </div>
+                      
+                        <!-- Fecha de entrega -->
+                        <div class="mb-3">
+                          <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+                          <input type="date" class="form-control" id="fechaEntrega" required>
+                        </div>
+                      
+                        <!-- Hora de entrega -->
+                        <div class="mb-3">
+                          <label for="horaEntrega" class="form-label">Hora de Entrega</label>
+                          <input type="time" class="form-control" id="horaEntrega" required>
+                        </div>
+                      
+                        <!-- Método de Pago -->
+                        <div class="mb-3">
+                          <label for="metodoPago" class="form-label">Método de Pago</label>
+                          <select class="form-select" id="metodoPago" required>
+                            <option value="">Selecciona un método</option>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="debito">Débito</option>
+                            <option value="credito">Crédito</option>
+                          </select>
+                        </div>
+                      
+                        <!-- Campo Cuotas -->
+                        <div class="mb-3 d-none" id="cuotasGroup">
+                          <label for="cuotas" class="form-label">Cuotas</label>
+                          <select class="form-select" id="cuotas">
+                            <option value="">Selecciona las cuotas</option>
+                            <option value="1">1 cuota</option>
+                            <option value="3">3 cuotas</option>
+                            <option value="6">6 cuotas</option>
+                            <option value="12">12 cuotas</option>
+                          </select>
+                        </div>
+                      </form>
+                      
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#cart">Volver</button>
+                    <button type="button" class="btn btn-primary" id="modal-add-to-cart" data-bs-dismiss="modal"><i
+                            class="fa fa-shopping-cart px-1"></i>Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="oferta" tabindex="-1" aria-labelledby="productLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <img src="" class="" alt="" id="modal-oferta-img">
+                    </div>
                 </div>
             </div>
         </div>

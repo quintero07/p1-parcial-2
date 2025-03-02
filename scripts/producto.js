@@ -1,11 +1,12 @@
 export class Producto {
-  constructor({id, nombre, descripcion, precio, imagen, categoria}) {
+  constructor({id, nombre, descripcion, precio, imagen, categoria, stock = 0}) {
       this.id = id;
       this.nombre = nombre;
       this.descripcion = descripcion;
       this.precio = precio;
       this.imagen = imagen;
       this.categoria = categoria;
+      this.stock = stock;
   }
 
   toHTML(index) {
@@ -23,7 +24,7 @@ export class Producto {
   
     const categoriaProducto = document.createElement('span');
     categoriaProducto.className = 'position-absolute d-flex align-items-center justify-content-center bg-primary p-2 text-light rounded';
-    categoriaProducto.innerHTML = this.categoria;
+    categoriaProducto.textContent = this.categoria;
     contenedorImagen.appendChild(categoriaProducto);
   
     cardProducto.appendChild(contenedorImagen);
@@ -53,7 +54,12 @@ export class Producto {
     botonAgregar.href = '#';
     botonAgregar.className = 'btn btn-primary mt-3 add-to-cart';
     botonAgregar.setAttribute('data-index', index);
-    botonAgregar.innerHTML = '<i class="fa fa-shopping-cart px-1"></i>Agregar';
+    const iconoCarrito = document.createElement ('i');
+    iconoCarrito.className = 'fa fa-shopping-cart px-1';
+    const textoBoton = document.createTextNode('Agregar');
+    botonAgregar.appendChild(iconoCarrito);
+    botonAgregar.appendChild(textoBoton);
+    
   
     const contenedorBotones = document.createElement('div');
     contenedorBotones.className = 'd-flex justify-content-around'
@@ -64,4 +70,17 @@ export class Producto {
     cardProducto.appendChild(contenedorDescripcion);
     return cardProducto;
   }
+
+  llenaModalProducto = (carrito) => {
+    document.getElementById('modal-product-img').src = this.imagen;
+    document.getElementById('modal-product-img').alt = this.nombre;
+    document.querySelector('.card-title').textContent = this.nombre;
+    document.querySelector('.card-text').textContent = this.descripcion;
+    document.getElementById('modal-product-price').textContent = `$${this.precio}`;
+
+    const modalAddToCartButton = document.getElementById('modal-add-to-cart');
+    modalAddToCartButton.onclick = () => {
+        carrito.agregarAlCarrito({...this, stock: 1});
+    };
+}
 }
